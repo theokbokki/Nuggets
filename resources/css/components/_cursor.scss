@@ -1,0 +1,14 @@
+@use '../utils' as *;
+@use '../colors';
+
+.cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: rem(16);
+    height: rem(16);
+    border-radius: 9999px;
+    background: colors.$stone-800;
+    pointer-events: none;
+    opacity: 0;
+}

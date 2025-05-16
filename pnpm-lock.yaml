@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      animejs:
+        specifier: ^4.0.2
+        version: 4.0.2
     devDependencies:
       laravel-vite-plugin:
         specifier: ^1.2.0
@@ -354,6 +358,9 @@ packages:
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
+
+  animejs@4.0.2:
+    resolution: {integrity: sha512-f0L/kSya2RF23iMSF/VO01pMmLwlAFoiQeNAvBXhEyLzIPd2/QTBRatwGUqkVCC6seaAJYzAkGir55N4SL+h3A==}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -779,6 +786,8 @@ snapshots:
     optional: true
 
   '@types/estree@1.0.7': {}
+
+  animejs@4.0.2: {}
 
   braces@3.0.3:
     dependencies:

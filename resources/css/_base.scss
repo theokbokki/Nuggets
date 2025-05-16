@@ -1,6 +1,11 @@
 @use 'utils' as *;
 @use 'fonts';
 
+:root {
+    cursor: none;
+    height: 100%;
+}
+
 .app {
     margin: 0 rem(20);
     font-family: fonts.$sans;

@@ -16,5 +16,6 @@
     </head>
     <body class="app">
         <x-header/>
+        <x-cursor/>
     </body>
 </html>
