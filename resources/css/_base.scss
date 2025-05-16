@@ -1,0 +1,11 @@
+@use 'utils' as *;
+@use 'fonts';
+
+.app {
+    margin: 0 rem(20);
+    font-family: fonts.$sans;
+
+    @media screen and (min-width: rem(800)) {
+        margin: 0 rem(80);
+    }
+}
