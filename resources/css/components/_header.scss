@@ -1,0 +1,30 @@
+@use '../utils' as *;
+@use '../colors';
+
+.header {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-top: rem(80);
+
+    &__figure {
+        width: rem(32);
+        margin-bottom: rem(80);
+    }
+
+    &__img {
+        width: 100%;
+    }
+
+    &__title {
+        font-size: rem(24);
+        line-height: 125%;
+        color: colors.$stone-400;
+    }
+
+    &__subtitle {
+        width: rem(340);
+        font-size: rem(24);
+        line-height: 125%;
+        color: colors.$stone-700;
+    }
+}
