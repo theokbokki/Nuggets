@@ -1,0 +1,12 @@
+@use '../utils' as *;
+@use '../colors';
+
+.nugget {
+    display: grid;
+    justify-content: center;
+    width: 100%;
+    margin: rem(40) auto;
+    padding: rem(120) 0;
+    border-radius: rem(30);
+    border: 1px solid colors.$stone-200;
+}
