@@ -3,12 +3,14 @@
 
 .cursor {
     position: fixed;
+    z-index: -1;
     top: 0;
     left: 0;
     width: rem(16);
     height: rem(16);
-    border-radius: 9999px;
+    border-radius: 8px;
     background: colors.$stone-800;
     pointer-events: none;
     opacity: 0;
+    transform-origin: center;
 }

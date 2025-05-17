@@ -1,0 +1,29 @@
+@use '../utils' as *;
+@use '../colors';
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: rem(80);
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: rem(8);
+        color: colors.$stone-500;
+        text-decoration: none;
+        cursor: none;
+        padding: rem(16);
+        border-radius: rem(8);
+
+        span {
+            min-width: max-content;
+        }
+    }
+
+    &__icon {
+        width: rem(14);
+    }
+}

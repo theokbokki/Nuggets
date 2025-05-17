@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header" id="top">
     <div>
         <h1 class="header__title">Nuggets</h1>
         <p class="header__subtitle">Bite sized aesthetic junk food. Crispy bits of UI design.</p>
