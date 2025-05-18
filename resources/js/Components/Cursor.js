@@ -19,6 +19,9 @@ export default class Cursor {
 
         this.topLinkRect = this.topLink.getBoundingClientRect();
         this.topLinkRadius = this.getCssValue(this.topLink, 'border-radius', true);
+
+        this.currentRadius = this.radius;
+        this.hoverZoneMargin = 32;
     }
 
     getElements() {
@@ -27,50 +30,54 @@ export default class Cursor {
 
     setEvents() {
         window.addEventListener('mousemove', this.handleMouseMove.bind(this));
-
-        this.topLink.addEventListener('mouseover', this.handleTopLinkOver.bind(this));
-
-        this.topLink.addEventListener('mouseout', this.handleTopLinkOut.bind(this));
     }
 
     handleMouseMove(e) {
-        // The element is hidden until the mouse moves so it doesn't show up in the top right corner on page load.
-        this.el.style.opacity = 1;
+        // Only transform the cursor when it's over the link
+        if (this.isMouseDirectlyOverLink(e)) {
+            this.mouseOverLink = true;
+        }
+
+        // Only remove the transform when it's outisde of the hover zone
+        if (! this.isMouseWithinHoverZone(e)) {
+            this.mouseOverLink = false;
+        }
 
         animate(this.el, {
             x: this.getX(e),
-            y : this.getY(e),
+            y: this.getY(e),
             scaleX: this.getWidth(),
             scaleY: this.getHeight(),
-            borderRadius: this.getRadius(),
             background: this.getBackground(),
-            duration: 75,
-            ease: eases.outQuad,
+            duration: this.getDuration(),
+            // We need custom radius calculations so it doesn't get distorded
+            onUpdate: () => this.el.style.borderRadius = this.getRadius(),
+            ease: eases.outQuint,
         });
-    }
 
-    handleTopLinkOver() {
-        this.mouseOverLink = true;
-    }
-
-    handleTopLinkOut() {
-        this.mouseOverLink = false;
+        this.el.style.opacity = 1;
     }
 
     getX(e) {
         if (! this.mouseOverLink) {
-            return e.clientX - this.width;
+            return e.clientX - this.width / 2;
         }
 
-        return this.topLinkRect.left + this.topLinkRect.width / 2 - this.width / 2;
+        const linkCenter = this.topLinkRect.left + this.topLinkRect.width / 2 - this.width / 2;
+        const dist = e.clientX - linkCenter;
+
+        return linkCenter + this.exponentialEase(dist)
     }
 
     getY(e) {
         if (! this.mouseOverLink) {
-            return e.clientY - this.height;
+            return e.clientY - this.height / 2;
         }
 
-        return this.topLinkRect.top + this.topLinkRect.height / 2 - this.height / 2;
+        const linkCenter = this.topLinkRect.top + this.topLinkRect.height / 2 - this.height / 2;
+        const dist = e.clientY - linkCenter;
+
+        return linkCenter + this.exponentialEase(dist)
     }
 
     getWidth() {
@@ -90,32 +97,14 @@ export default class Cursor {
     }
 
     getRadius() {
-        if (! this.mouseOverLink) {
-            return `${this.radius}px`;
-        }
+        const targetRadius = this.mouseOverLink ? this.topLinkRadius : this.radius;
 
-        const { scaleX, scaleY } = this.getCurrentScale(this.el);
+        const easingSpeed = 0.05;
+        this.currentRadius += (targetRadius - this.currentRadius) * easingSpeed;
 
-        const correctedHorizontal = this.topLinkRadius / scaleX;
-        const correctedVertical = this.topLinkRadius / scaleY;
+        const { scaleX, scaleY } = this.getCurrentScale();
 
-        return `${correctedHorizontal}px / ${correctedVertical}px`;
-    }
-
-    getCurrentScale(el) {
-        const style = window.getComputedStyle(el);
-        const transform = style.transform;
-
-        if (transform === 'none') {
-            return { scaleX: 1, scaleY: 1 };
-        }
-
-        const matrix = new DOMMatrix(transform);
-
-        return {
-            scaleX: matrix.a,
-            scaleY: matrix.d
-        };
+        return `${this.currentRadius / scaleX}px / ${this.currentRadius / scaleY}px`;
     }
 
     getBackground() {
@@ -126,6 +115,44 @@ export default class Cursor {
         return '#F5F5F4';
     }
 
+    getDuration() {
+        if (this.getCssValue(this.el, 'opacity', true)) {
+            return 75;
+        }
+
+        return 0;
+    }
+
+    isMouseDirectlyOverLink(e) {
+        return (
+            e.clientX >= this.topLinkRect.left &&
+            e.clientX <= this.topLinkRect.right &&
+            e.clientY >= this.topLinkRect.top &&
+            e.clientY <= this.topLinkRect.bottom
+        );
+    }
+
+    isMouseWithinHoverZone(e) {
+        return (
+            e.clientX >= this.topLinkRect.left - this.hoverZoneMargin &&
+            e.clientX <= this.topLinkRect.right + this.hoverZoneMargin &&
+            e.clientY >= this.topLinkRect.top - this.hoverZoneMargin &&
+            e.clientY <= this.topLinkRect.bottom + this.hoverZoneMargin
+        );
+    }
+
+    exponentialEase(distance, factor = 8) {
+        return (1 - Math.pow(2, -0.05 * Math.abs(distance))) * Math.sign(distance) * factor;
+    }
+
+    getCurrentScale() {
+        const matrix = new DOMMatrix(this.getCssValue(this.el, 'transform'));
+
+        return {
+            scaleX: matrix.a,
+            scaleY: matrix.d
+        };
+    }
 
     getCssValue(el, property, asInt = false) {
         const style = window.getComputedStyle(el);
