@@ -32,9 +32,13 @@ export default class Cursor {
         window.addEventListener('mousemove', this.handleMouseMove.bind(this));
 
         window.addEventListener('click', this.handleClick.bind(this));
+
+        window.addEventListener('scroll', this.handleScroll.bind(this));
     }
 
     handleMouseMove(e) {
+        this.topLinkRect = this.topLink.getBoundingClientRect();
+
         // Only transform the cursor when it's over the link
         if (this.isMouseDirectlyOverLink(e)) {
             this.mouseOverLink = true;
@@ -62,7 +66,7 @@ export default class Cursor {
         animate(this.topLink, {
             x: this.getLinkX(e),
             y: this.getLinkY(e),
-            duration: this.getDuration(),
+            duration: this.getLinkDuration(),
             ease: eases.outQuint,
         });
     }
@@ -73,6 +77,10 @@ export default class Cursor {
         }
 
         window.location.hash = new URL(this.topLink.href).hash;
+    }
+
+    handleScroll() {
+        this.topLinkRect = this.topLink.getBoundingClientRect();
     }
 
     getX(e) {
@@ -105,7 +113,7 @@ export default class Cursor {
         const linkCenter = this.topLinkRect.top + this.topLinkRect.height / 2 - this.height / 2;
         const dist = e.clientY - linkCenter;
 
-        return linkCenter + this.exponentialEase(dist)
+        return linkCenter + this.exponentialEase(dist);
     }
 
     getLinkY(e) {
@@ -160,6 +168,14 @@ export default class Cursor {
         }
 
         return 0;
+    }
+
+    getLinkDuration() {
+        if (this.mouseOverLink) {
+            return 75;
+        }
+
+        return 150;
     }
 
     isMouseDirectlyOverLink(e) {
