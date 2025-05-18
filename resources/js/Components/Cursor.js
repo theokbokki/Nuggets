@@ -30,6 +30,8 @@ export default class Cursor {
 
     setEvents() {
         window.addEventListener('mousemove', this.handleMouseMove.bind(this));
+
+        window.addEventListener('click', this.handleClick.bind(this));
     }
 
     handleMouseMove(e) {
@@ -63,6 +65,14 @@ export default class Cursor {
             duration: this.getDuration(),
             ease: eases.outQuint,
         });
+    }
+
+    handleClick() {
+        if (! this.mouseOverLink) {
+            return;
+        }
+
+        window.location.hash = this.topLink.href;
     }
 
     getX(e) {
