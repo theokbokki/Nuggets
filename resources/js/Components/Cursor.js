@@ -56,6 +56,13 @@ export default class Cursor {
         });
 
         this.el.style.opacity = 1;
+
+        animate(this.topLink, {
+            x: this.getLinkX(e),
+            y: this.getLinkY(e),
+            duration: this.getDuration(),
+            ease: eases.outQuint,
+        });
     }
 
     getX(e) {
@@ -69,6 +76,17 @@ export default class Cursor {
         return linkCenter + this.exponentialEase(dist)
     }
 
+    getLinkX(e) {
+        if (! this.mouseOverLink) {
+            return 0;
+        }
+
+        const linkCenter = this.topLinkRect.left + this.topLinkRect.width / 2 - this.width / 2;
+        const dist = e.clientX - linkCenter;
+
+        return this.exponentialEase(dist) * 1.5;
+    }
+
     getY(e) {
         if (! this.mouseOverLink) {
             return e.clientY - this.height / 2;
@@ -78,6 +96,17 @@ export default class Cursor {
         const dist = e.clientY - linkCenter;
 
         return linkCenter + this.exponentialEase(dist)
+    }
+
+    getLinkY(e) {
+        if (! this.mouseOverLink) {
+            return 0;
+        }
+
+        const linkCenter = this.topLinkRect.top + this.topLinkRect.height / 2 - this.height / 2;
+        const dist = e.clientY - linkCenter;
+
+        return this.exponentialEase(dist) * 1.5;
     }
 
     getWidth() {
