@@ -72,7 +72,7 @@ export default class Cursor {
             return;
         }
 
-        window.location.hash = this.topLink.href;
+        window.location.hash = new URL(this.topLink.href).hash;
     }
 
     getX(e) {
