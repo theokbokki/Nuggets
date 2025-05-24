@@ -9,6 +9,7 @@
     margin: rem(80) 0;
 
     &__link {
+        z-index: 1;
         display: flex;
         align-items: center;
         gap: rem(8);
