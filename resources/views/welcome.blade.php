@@ -16,6 +16,10 @@
     </head>
     <body class="app">
         <x-header/>
+
+        <x-nugget>
+        </x-nugget>
+
         <x-footer/>
         <x-cursor/>
     </body>

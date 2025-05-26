@@ -42,6 +42,7 @@ export default class Cursor {
     getElements() {
         this.topLink = document.querySelector('.footer__link[href="#top"]');
         this.theooLink = document.querySelector('[href="https://theoo.dev"]');
+        this.nuggets = document.querySelectorAll('.nuggets');
     }
 
     setEvents() {
@@ -49,6 +50,14 @@ export default class Cursor {
     }
 
     handleMouseMove(e) {
+        if (e.target.closest('.nugget')) {
+            this.cursor.opacity(0, 75);
+            document.documentElement.style.cursor = 'unset';
+        } else {
+            document.documentElement.style.cursor = 'none';
+            this.cursor.opacity(1, 75);
+        };
+
         for (const behaviour of this.behaviours) {
             if (this.activeBehaviour?.getIsActive(e)) {
                 break;
@@ -76,7 +85,6 @@ export default class Cursor {
             .height(this.height)
             .scale(1)
             .backgroundColor(this.background)
-            .borderRadius(this.radius)
-            .opacity(1);
+            .borderRadius(this.radius);
     }
 }
