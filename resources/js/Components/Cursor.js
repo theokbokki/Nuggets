@@ -1,6 +1,7 @@
 import { createAnimatable, eases } from 'animejs';
 import { getCssValue, hexToRgb } from './Helpers.js';
 import CursorOverLink from './CursorOverLink';
+import CursorWithCats from './CursorWithCats';
 
 export default class Cursor {
     constructor(el) {
@@ -19,6 +20,7 @@ export default class Cursor {
 
         this.behaviours = [
             new CursorOverLink(this, this.topLink),
+            new CursorWithCats(this, this.theooLink),
         ];
         this.activeBehaviour = null;
 
@@ -29,6 +31,7 @@ export default class Cursor {
             y: this.duration,
             width: this.duration,
             height: this.duration,
+            scale: this.duration,
             backgroundColor: this.duration,
             borderRadius: this.duration,
             opacity: 0,
@@ -38,6 +41,7 @@ export default class Cursor {
 
     getElements() {
         this.topLink = document.querySelector('.footer__link[href="#top"]');
+        this.theooLink = document.querySelector('[href="https://theoo.dev"]');
     }
 
     setEvents() {
@@ -52,6 +56,7 @@ export default class Cursor {
 
             if (behaviour.getIsActive(e)) {
                 this.activeBehaviour = behaviour;
+                this.activeBehaviour.onBehaviourStart(e, this.cursor);
                 break;
             }
 
@@ -60,15 +65,16 @@ export default class Cursor {
         }
 
         if (this.activeBehaviour) {
-            this.activeBehaviour.onBehaviourStart(e, this.cursor);
+            this.activeBehaviour.whileBehaviour(e, this.cursor);
             return;
         }
 
         this.cursor
-            .x(e.clientX - this.width/2)
+            .x(e.clientX - this.width / 2)
             .y(e.clientY - this.height / 2)
             .width(this.width)
             .height(this.height)
+            .scale(1)
             .backgroundColor(this.background)
             .borderRadius(this.radius)
             .opacity(1);

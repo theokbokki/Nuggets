@@ -49,19 +49,20 @@ export default class CursorOverLink {
     }
 
     onBehaviourStart(e, cursor) {
+    }
+
+    whileBehaviour(e, cursor) {
         cursor
             .x(this.getX(e))
             .y(this.getY(e))
             .width(this.linkRect.width)
             .height(this.linkRect.height)
             .borderRadius(this.linkRadius)
-            .backgroundColor(hexToRgb('#F5F5F4'))
-
-        this.cursor.targetRadius = this.linkRadius;
+            .backgroundColor(hexToRgb('#F5F5F4'));
 
         this.linkAnim
             .x(this.getLinkX(e), 150)
-            .y(this.getLinkY(e), 150)
+            .y(this.getLinkY(e), 150);
     }
 
     onBehaviourEnd(e, cursor) {
