@@ -27,11 +27,8 @@
         display: grid;
         grid-template-columns: repeat(3, rem(64));
         gap: rem(8);
-        padding: rem(24);
         align-items: center;
         justify-items: center;
-        width: rem(208);
-        height: rem(136);
 
         &:hover {
             cursor: pointer;
