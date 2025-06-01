@@ -18,6 +18,7 @@
         <x-header/>
 
         <x-nugget>
+            <x-image-stack/>
         </x-nugget>
 
         <x-footer/>
