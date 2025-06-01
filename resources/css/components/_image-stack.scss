@@ -1,8 +1,15 @@
 @use "../utils" as *;
+@use "sass:math";
 
 .image-stack {
     position: relative;
-    padding: rem(24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(rem(280), 50vw, rem(420));
+    aspect-ratio: 1/1;
+    background-image: url("../img/components/image-stack/painting.webp");
+    background-size: cover;
 
     &__bg {
         position: absolute;
@@ -12,16 +19,23 @@
         height: 0;
         border-radius: rem(30);
         transform: translate(-50%, -50%);
+        backdrop-filter: blur(5px);
+        overflow: hidden;
     }
 
     &__images {
         display: grid;
         grid-template-columns: repeat(3, rem(64));
         gap: rem(8);
+        padding: rem(24);
         align-items: center;
         justify-items: center;
         width: rem(208);
         height: rem(136);
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     &__img {
@@ -30,25 +44,31 @@
         height: rem(64);
         object-fit: cover;
         border-radius: rem(8);
-        box-shadow: 0 rem(4) rem(8) rem(-8) rgba(0,0,0,0.75);
+        box-shadow: 0 rem(4) rem(8) rem(-8) rgb(0,0,0,0.75);
 
-
-        $rotations: -15, 7.5, 15, 22.5, -7.5, 0;
+        $rotations: -15, 7.5, 15, 22.5, -7.5, 5;
 
         @for $i from 0 through 5 {
+            $progress: ($i + 1) / 6;
+            $opacity: math.pow($progress, 2);
+
             &--#{$i} {
                 transform: rotate(nth($rotations, $i + 1) + deg);
+                opacity: $opacity;
+                filter: blur(#{(5 - $i) / 5 * 1.5}px);
             }
         }
     }
 
-    &--clicked {
+    &--open {
         .image-stack {
             &__img {
                 position: relative;
                 grid-column: auto;
                 grid-row: auto;
                 transform: rotate(0);
+                opacity: 1;
+                filter: none;
             }
         }
     }
