@@ -1,0 +1,55 @@
+@use "../utils" as *;
+
+.image-stack {
+    position: relative;
+    padding: rem(24);
+
+    &__bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: rem(30);
+        transform: translate(-50%, -50%);
+    }
+
+    &__images {
+        display: grid;
+        grid-template-columns: repeat(3, rem(64));
+        gap: rem(8);
+        align-items: center;
+        justify-items: center;
+        width: rem(208);
+        height: rem(136);
+    }
+
+    &__img {
+        position: absolute;
+        width: rem(64);
+        height: rem(64);
+        object-fit: cover;
+        border-radius: rem(8);
+        box-shadow: 0 rem(4) rem(8) rem(-8) rgba(0,0,0,0.75);
+
+
+        $rotations: -15, 7.5, 15, 22.5, -7.5, 0;
+
+        @for $i from 0 through 5 {
+            &--#{$i} {
+                transform: rotate(nth($rotations, $i + 1) + deg);
+            }
+        }
+    }
+
+    &--clicked {
+        .image-stack {
+            &__img {
+                position: relative;
+                grid-column: auto;
+                grid-row: auto;
+                transform: rotate(0);
+            }
+        }
+    }
+}
