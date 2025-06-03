@@ -19,7 +19,7 @@
         height: 0;
         border-radius: rem(30);
         transform: translate(-50%, -50%);
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(rem(5));
         overflow: hidden;
     }
 
@@ -46,12 +46,9 @@
         $rotations: -15, 7.5, 15, 22.5, -7.5, 5;
 
         @for $i from 0 through 5 {
-            $progress: ($i + 1) / 6;
-            $opacity: math.pow($progress, 2);
-
             &--#{$i} {
                 transform: rotate(nth($rotations, $i + 1) + deg);
-                opacity: $opacity;
+                opacity: math.pow(($i + 1) / 6, 2);
                 filter: blur(#{(5 - $i) / 5 * 1.5}px);
             }
         }

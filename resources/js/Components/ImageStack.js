@@ -12,10 +12,10 @@ export default class ImageStack {
     }
 
     getElements() {
-        this.images = this.el.querySelectorAll(".image-stack__img");
-        this.imagesContainer = this.el.querySelector(".image-stack__images");
         this.nugget = this.el.closest(".nugget");
         this.bg = this.el.querySelector(".image-stack__bg");
+        this.imagesContainer = this.el.querySelector(".image-stack__images");
+        this.images = this.el.querySelectorAll(".image-stack__img");
     }
 
     setEvents() {
@@ -33,19 +33,17 @@ export default class ImageStack {
     }
 
     open() {
-        const state = Flip.getState(this.images, {
-            props: "opacity",
-        });
+        const state = this.getState();
 
         this.el.classList.add("image-stack--open");
 
         gsap.to(this.bg, {
-            width: "256px",
-            height: "184px",
+            width: `${256 / 16}rem`,
+            height: `${184 / 16}rem`,
             backgroundColor: "rgb(255, 255, 255, .15)",
             boxShadow: "0 4px 16px -8px rgb(0,0,0,0.35)",
-            duration: 0.9,
-            ease: "elastic.out(1, 0.6)",
+            duration: 0.7,
+            ease: "elastic.out(1, 0.9)",
         });
 
         Flip.from(state, {
@@ -54,14 +52,12 @@ export default class ImageStack {
             ease: "elastic.out(1, 0.6)",
             stagger: 0.02,
             scale: true,
-            props: "opacity",
+                props: "opacity, filter",
         });
     }
 
     close() {
-        const state = Flip.getState(this.images, {
-            props: "opacity, filter",
-        });
+        const state = this.getState();
 
         this.el.classList.remove("image-stack--open");
 
@@ -80,6 +76,12 @@ export default class ImageStack {
             ease: "power3.inOut",
             stagger: 0.02,
             scale: true,
+            props: "opacity, filter",
+        });
+    }
+
+    getState() {
+        return Flip.getState(this.images, {
             props: "opacity, filter",
         });
     }
