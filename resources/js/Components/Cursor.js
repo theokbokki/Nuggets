@@ -7,6 +7,10 @@ export default class Cursor {
     constructor(el) {
         this.el = el;
 
+        if (navigator.maxTouchPoints > 1) {
+            return;
+        }
+
         this.getElements();
         this.init();
         this.setEvents();
