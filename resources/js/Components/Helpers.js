@@ -9,12 +9,12 @@ export function getCssValue(el, property, asInt = false) {
     return parseInt(value);
 }
 
-export function isMouseOverZone(e, bounds, margin = 0) {
+export function isMouseOverZone(x, y, bounds, margin = 0) {
     return (
-        e.clientX >= bounds.left - margin &&
-        e.clientX <= bounds.right + margin &&
-        e.clientY >= bounds.top - margin &&
-        e.clientY <= bounds.bottom + margin
+        x >= bounds.left - margin &&
+        x <= bounds.right + margin &&
+        y >= bounds.top - margin &&
+        y <= bounds.bottom + margin
     );
 }
 

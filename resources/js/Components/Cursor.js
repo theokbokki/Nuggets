@@ -1,7 +1,6 @@
-import { createAnimatable, eases } from 'animejs';
+import { gsap } from "gsap"
+import BackdropCursor from './BackdropCursor';
 import { getCssValue, hexToRgb } from './Helpers.js';
-import CursorOverLink from './CursorOverLink';
-import CursorWithCats from './CursorWithCats';
 
 export default class Cursor {
     constructor(el) {
@@ -10,81 +9,74 @@ export default class Cursor {
         this.getElements();
         this.init();
         this.setEvents();
-    }
-
-    init() {
-        this.width = getCssValue(this.el, 'width', true);
-        this.height = getCssValue(this.el, 'height', true);
-        this.radius = getCssValue(this.el, 'border-radius', true);
-        this.background = hexToRgb('#292524');
-
-        this.behaviours = [
-            new CursorOverLink(this, this.topLink),
-            new CursorWithCats(this, this.theooLink),
-        ];
-        this.activeBehaviour = null;
-
-        this.duration = 75;
-
-        this.cursor = createAnimatable('.cursor', {
-            x: this.duration,
-            y: this.duration,
-            width: this.duration,
-            height: this.duration,
-            scale: this.duration,
-            backgroundColor: this.duration,
-            borderRadius: this.duration,
-            opacity: 0,
-            ease: eases.outQuint,
-        });
+        this.animate();
     }
 
     getElements() {
         this.topLink = document.querySelector('.footer__link[href="#top"]');
         this.theooLink = document.querySelector('[href="https://theoo.dev"]');
-        this.nuggets = document.querySelectorAll('.nuggets');
+    }
+
+    init() {
+        this.mouse = {
+            x: 0,
+            y: 0,
+        };
+
+        this.behaviours = [
+            new BackdropCursor(this, this.topLink),
+            new BackdropCursor(this, this.theooLink),
+        ];
+
+        this.currentBehaviour = null;
+
+        this.width = getCssValue(this.el, 'width', true);
+        this.height = getCssValue(this.el, 'height', true);
+        this.radius = getCssValue(this.el, 'border-radius', true);
+        this.backgroundColor = "#292524";
     }
 
     setEvents() {
-        window.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        window.addEventListener("mousemove", this.handleMouseMove.bind(this));
     }
 
     handleMouseMove(e) {
-        if (e.target.closest('.nugget')) {
-            this.cursor.opacity(0, 75);
-            document.documentElement.style.cursor = 'unset';
-        } else {
-            document.documentElement.style.cursor = 'none';
-            this.cursor.opacity(1, 75);
-        };
+        this.mouse = { x: e.clientX, y: e.clientY };
+    }
 
+    animate() {
         for (const behaviour of this.behaviours) {
-            if (this.activeBehaviour?.getIsActive(e)) {
+            if (this.currentBehaviour?.isActive()) {
                 break;
             }
 
-            if (behaviour.getIsActive(e)) {
-                this.activeBehaviour = behaviour;
-                this.activeBehaviour.onBehaviourStart(e, this.cursor);
+            if (behaviour.isActive()) {
+                this.currentBehaviour = behaviour;
+                this.currentBehaviour.startBehaviour();
+
                 break;
             }
 
-            this.activeBehaviour?.onBehaviourEnd(e, this.cursor);
-            this.activeBehaviour = null;
+            this.currentBehaviour?.endBehaviour();
+            this.currentBehaviour = null;
         }
 
-        if (this.activeBehaviour) {
-            this.activeBehaviour.whileBehaviour(e, this.cursor);
-            return;
+        if (!this.currentBehaviour) {
+            gsap.to(this.el, {
+                x: this.mouse.x - this.width / 2,
+                y: this.mouse.y - this.height / 2,
+                opacity: 1,
+                width: this.width,
+                height: this.height,
+                borderRadius: this.radius,
+                backgroundColor: this.backgroundColor,
+                duration: 0.15,
+                ease: "power2.out",
+            });
         }
 
-        this.cursor
-            .x(e.clientX - this.width / 2)
-            .y(e.clientY - this.height / 2)
-            .width(this.width)
-            .height(this.height)
-            .scale(1)
-            .backgroundColor(this.background)
-            .borderRadius(this.radius);
+        this.currentBehaviour?.whileBehaviour();
+
+        requestAnimationFrame(() => this.animate());
     }
 }
