@@ -1,7 +1,7 @@
 import { gsap } from "gsap"
 import BackdropCursor from './BackdropCursor';
 import CursorWithCats from './CursorWithCats';
-import { getCssValue } from './Helpers.js';
+import { getCssValue, isMouseOverZone } from './Helpers.js';
 
 export default class Cursor {
     constructor(el) {
@@ -16,6 +16,7 @@ export default class Cursor {
     getElements() {
         this.topLink = document.querySelector('.footer__link[href="#top"]');
         this.theooLink = document.querySelector('[href="https://theoo.dev"]');
+        this.nuggets = document.querySelectorAll('.nugget');
     }
 
     init() {
@@ -46,6 +47,28 @@ export default class Cursor {
     }
 
     animate() {
+        this.nuggets.forEach((nugget) => {
+            const bounds = nugget.getBoundingClientRect();
+
+            if (isMouseOverZone(this.mouse.x, this.mouse.y, bounds, -16)) {
+                gsap.to(this.el, {
+                    opacity: 0,
+                    duration: .5,
+                    ease: "power3.out",
+                });
+
+                document.documentElement.style.cursor = 'unset';
+            } else {
+                gsap.to(this.el, {
+                    opacity: 1,
+                    duration: .5,
+                    ease: "power3.out",
+                });
+
+                document.documentElement.style.cursor = 'none';
+            }
+        });
+
         for (const behaviour of this.behaviours) {
             if (this.currentBehaviour?.isActive()) {
                 break;
@@ -66,7 +89,6 @@ export default class Cursor {
             gsap.to(this.el, {
                 x: this.mouse.x - this.width / 2,
                 y: this.mouse.y - this.height / 2,
-                opacity: 1,
                 width: this.width,
                 height: this.height,
                 borderRadius: this.radius,
