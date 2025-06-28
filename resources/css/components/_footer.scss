@@ -23,6 +23,10 @@
         span {
             min-width: max-content;
         }
+
+        &--theoo {
+            mix-blend-mode: plus-lighter;
+        }
     }
 
     &__icon {

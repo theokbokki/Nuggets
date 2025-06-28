@@ -1,6 +1,7 @@
 import { gsap } from "gsap"
 import BackdropCursor from './BackdropCursor';
-import { getCssValue, hexToRgb } from './Helpers.js';
+import CursorWithCats from './CursorWithCats';
+import { getCssValue } from './Helpers.js';
 
 export default class Cursor {
     constructor(el) {
@@ -25,7 +26,7 @@ export default class Cursor {
 
         this.behaviours = [
             new BackdropCursor(this, this.topLink),
-            new BackdropCursor(this, this.theooLink),
+            new CursorWithCats(this, this.theooLink),
         ];
 
         this.currentBehaviour = null;

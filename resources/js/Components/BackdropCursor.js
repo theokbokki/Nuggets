@@ -1,4 +1,4 @@
-import { getCssValue, isMouseOverZone, hexToRgb } from './Helpers.js';
+import { getCssValue, isMouseOverZone } from './Helpers.js';
 import { gsap } from "gsap"
 
 export default class BackdropCursor {

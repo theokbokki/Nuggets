@@ -1,10 +1,10 @@
-import { isMouseOverZone, hexToRgb } from './Helpers.js';
-import { createAnimatable, eases, createSpring } from 'animejs';
+import { gsap } from "gsap"
+import { isMouseOverZone } from './Helpers.js';
 
 export default class CursorWithCats {
-    constructor (cursor, target) {
+    constructor (cursor, el) {
         this.cursor = cursor;
-        this.target = target;
+        this.el = el;
 
         this.getElements();
         this.init();
@@ -12,104 +12,106 @@ export default class CursorWithCats {
     }
 
     init() {
-        this.isActive = false;
-        this.resetTargetRect();
-        this.duration = 150;
+        this.setRect();
 
-        this.tsuki = createAnimatable(this.cats[0], {
-            x: this.duration,
-            y: this.duration,
-            scale: this.duration,
-            rotate: this.duration,
-            opacity: this.duration,
-            ease: createSpring({ stiffness: 150, damping: 8 }),
-        });
-
-        this.matcha = createAnimatable(this.cats[1], {
-            x: this.duration,
-            y: this.duration,
-            scale: this.duration,
-            rotate: this.duration,
-            opacity: this.duration,
-            ease: createSpring({ stiffness: 150, damping: 8 }),
-        });
+        this.active = false;
+        this.hoverMargin = 5;
+        this.elasticEasing = "elastic.out(1.5, 0.4)";
+        this.elasticDuration = .75;
+        this.duration = .25;
     }
 
     getElements() {
         this.cats = this.cursor.el.querySelectorAll('.cursor__cat');
+        this.tsuki = this.cats[0];
+        this.matcha = this.cats[1];
     }
 
     setEvents() {
-        window.addEventListener('click', this.handleClick.bind(this));
+        window.addEventListener('scroll', this.setRect.bind(this));
 
-        window.addEventListener('scroll', this.resetTargetRect.bind(this));
-
-        window.addEventListener('resize', this.resetTargetRect.bind(this));
+        window.addEventListener('resize', this.setRect.bind(this));
     }
 
-    handleClick() {
-        if (! this.isActive || ! this.target.href) {
-            return;
+    setRect() {
+        this.rect = this.el.getBoundingClientRect();
+    }
+
+    isActive() {
+        if (isMouseOverZone(this.cursor.mouse.x, this.cursor.mouse.y, this.rect)) {
+            this.active = true;
         }
 
-        window.location = new URL(this.target.href);
-    }
-
-    resetTargetRect() {
-        this.targetRect = this.target.getBoundingClientRect();
-    }
-
-    onBehaviourStart(e, cursor) {
-        this.target.style.zIndex = 0;
-
-        this.tsuki
-            .x(this.cursor.width)
-            .y(this.cursor.width)
-            .scale(1.5)
-            .rotate(25)
-            .opacity(1, this.duration, eases.outQuint);
-
-        this.matcha
-            .x(-this.cursor.width)
-            .y(-this.cursor.width)
-            .scale(1.5)
-            .rotate(-25)
-            .opacity(1, this.duration, eases.outQuint);
-    }
-
-    whileBehaviour(e, cursor) {
-        cursor
-            .backgroundColor(hexToRgb('#FB4300'))
-            .scale(1.5, 250)
-            .x(e.clientX - this.cursor.width / 2)
-            .y(e.clientY - this.cursor.height / 2)
-    }
-
-    onBehaviourEnd(e, cursor) {
-        this.tsuki
-            .x(0)
-            .y(0)
-            .scale(0)
-            .rotate(0)
-            .opacity(0);
-
-        this.matcha
-            .x(0)
-            .y(0)
-            .scale(0)
-            .rotate(0)
-            .opacity(0);
-    }
-
-    getIsActive(e) {
-        if (isMouseOverZone(e, this.targetRect)) {
-            this.isActive = true;
+        if (! isMouseOverZone(this.cursor.mouse.x, this.cursor.mouse.y, this.rect, this.hoverMargin)) {
+            this.active = false;
         }
 
-        if (! isMouseOverZone(e, this.targetRect, 5)) {
-            this.isActive = false;
+        return this.active;
+    }
+
+    startBehaviour() {
+        if (this.catAnim) {
+            this.catAnim.kill();
         }
 
-        return this.isActive;
+        this.cursor.el.style.zIndex = 0;
+
+        gsap.to(this.tsuki, {
+            x: this.cursor.width,
+            y: this.cursor.width,
+            scale: 1.5,
+            rotate: 25,
+            duration: this.elasticDuration,
+            ease: this.elasticEasing,
+        });
+
+        gsap.to(this.matcha, {
+            x: -this.cursor.width,
+            y: -this.cursor.width,
+            scale: 1.5,
+            rotate: -25,
+            duration: this.elasticDuration,
+            ease: this.elasticEasing,
+        });
+
+        gsap.to(this.cats, {
+            opacity: 1,
+            duration: 0.075,
+            ease: "power1.out",
+        });
+    }
+
+    whileBehaviour() {
+        gsap.to(this.cursor.el, {
+            x: this.cursor.mouse.x - this.cursor.width / 2,
+            y: this.cursor.mouse.y - this.cursor.height / 2,
+            backgroundColor: "#FB4300",
+            duration: this.duration,
+            ease: "power1.out",
+        });
+
+        gsap.to(this.cursor.el, {
+            scale: 1.5,
+            duration: this.duration,
+            ease: "power1.out",
+        });
+    }
+
+    endBehaviour() {
+        gsap.to(this.cursor.el, {
+            scale: 1,
+            duration: this.duration,
+            ease: "power1.out",
+        });
+
+        this.catAnim = gsap.to(this.cats, {
+            x: 0,
+            y: 0,
+            scale: 0,
+            opacity: 0,
+            rotate: 0,
+            duration: this.duration,
+            ease: "power1.out",
+        });
     }
 }

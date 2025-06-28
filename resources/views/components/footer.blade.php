@@ -5,5 +5,5 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
         </svg>
     </a>
-    <a href="https://theoo.dev" class="footer__link">Made by Théoo</a>
+    <a href="https://theoo.dev" class="footer__link footer__link--theoo">Made by Théoo</a>
 </footer>
