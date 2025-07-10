@@ -104,27 +104,36 @@ export default class Cursor {
             return;
         }
 
-        this.nuggets.forEach((nugget) => {
+        let inNugget = false;
+
+        for(const nugget of this.nuggets) {
             const bounds = nugget.getBoundingClientRect();
 
             if (isMouseOverZone(this.mouse.x, this.mouse.y, bounds, -16)) {
-                gsap.to(this.el, {
-                    opacity: 0,
-                    duration: .5,
-                    ease: "power3.out",
-                });
-
-                document.documentElement.style.cursor = 'unset';
-                return;
+                inNugget = true;
+                break;
             }
 
+            inNugget = false;
+        }
+
+        if (inNugget) {
             gsap.to(this.el, {
-                opacity: 1,
+                opacity: 0,
                 duration: .5,
                 ease: "power3.out",
             });
 
-            document.documentElement.style.cursor = 'none';
+            document.documentElement.style.cursor = 'unset';
+            return;
+        }
+
+        gsap.to(this.el, {
+            opacity: 1,
+            duration: .5,
+            ease: "power3.out",
         });
+
+        document.documentElement.style.cursor = 'none';
     }
 }

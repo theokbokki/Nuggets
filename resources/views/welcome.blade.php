@@ -21,6 +21,9 @@
             <x-image-stack/>
         </x-nugget>
 
+        <x-nugget>
+        </x-nugget>
+
         <x-footer/>
         <x-cursor/>
     </body>
